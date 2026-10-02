@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadoras de Precificação — Tirzepatida e Depilação</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1128;--card:#111a3b;--card2:#16214a;--line:#24336a;--teal:#19e3c1;--gold:#f4c542;--red:#ff5d73;--green:#2fe08a;--txt:#e8ecf8;--mut:#8b97bd}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#16265a 0,var(--bg) 60%);color:var(--txt);font-family:Inter,system-ui,sans-serif;min-height:100vh}
+.wrap{max-width:1180px;margin:auto;padding:20px 16px 50px}
+h1{font-size:22px;margin:4px 0 16px;letter-spacing:.3px}
+h1 span{color:var(--gold)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--mut);border-radius:14px;padding:14px;font:600 15px Inter;cursor:pointer;transition:.2s}
+.tab.on{color:#0a1128;background:linear-gradient(135deg,var(--gold),#ffd978);border-color:var(--gold);box-shadow:0 0 18px #f4c54255}
+section{display:none}section.on{display:block}
+.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:12px;letter-spacing:1.4px;text-transform:uppercase;color:var(--teal)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.f2{grid-template-columns:1fr}}
+.fl{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--mut);font-weight:500}
+.inp{display:flex;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:0 10px;transition:.2s}
+.inp:focus-within{border-color:var(--teal);box-shadow:0 0 0 2px #19e3c133}
+.inp input,.inp select{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--txt);font:600 15px 'JetBrains Mono',monospace;padding:10px 4px;width:100%}
+.inp select{font-family:Inter;font-weight:500}
+.inp select option{background:var(--card2)}
+.inp span{color:var(--mut);font:500 12px 'JetBrains Mono',monospace}
+.tg{background:#0a1128;border:1px solid var(--gold);color:var(--gold);border-radius:8px;font:700 11px 'JetBrains Mono',monospace;padding:4px 8px;cursor:pointer}
+.hero{text-align:center;padding:10px 0 14px;border-bottom:1px dashed var(--line);margin-bottom:12px}
+.hero small{color:var(--mut);font-size:11px;letter-spacing:1.4px;text-transform:uppercase}
+.hero b{display:block;font:700 46px 'JetBrains Mono',monospace;margin:4px 0}
+.hero em{font-style:normal;color:var(--mut);font-size:13px}
+.g{color:var(--green)}.y{color:var(--gold)}.r{color:var(--red)}.n{color:var(--mut)}
+.ln{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #1c2a5a;font-size:13px}
+.ln b{font:600 13px 'JetBrains Mono',monospace}
+.ln.tot{border-top:1px solid var(--gold);border-bottom:0;margin-top:4px;font-weight:700}
+.alert{margin-top:12px;padding:11px 12px;border-radius:10px;font-size:13px;line-height:1.5;background:#f4c54212;border-left:3px solid var(--gold)}
+.alert.ok{background:#2fe08a12;border-color:var(--green)}.alert.bad{background:#ff5d7314;border-color:var(--red)}
+.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
+.mini div{background:var(--card2);border-radius:10px;padding:9px}
+.mini small{display:block;color:var(--mut);font-size:10px;text-transform:uppercase;letter-spacing:.8px}
+.mini b{font:600 14px 'JetBrains Mono',monospace;color:var(--teal)}
+.vr{display:grid;grid-template-columns:150px 1fr 96px;gap:10px;align-items:center;padding:6px 0;font-size:12px}
+@media(max-width:560px){.vr{grid-template-columns:110px 1fr 80px}}
+.vr .bar{height:9px;background:#0a1128;border-radius:6px;overflow:hidden}
+.vr .bar i{display:block;height:100%;border-radius:6px;transition:width .3s}
+.vr .pc{text-align:right;font:600 12px 'JetBrains Mono',monospace}
+.vr.tot{border-top:1px solid var(--gold);margin-top:6px;padding-top:10px;font-weight:700}
+.ar{display:grid;grid-template-columns:1.3fr 1fr 1fr 28px;gap:6px;margin-bottom:6px;align-items:center}
+.ar .inp input{font-size:13px;padding:8px 2px}
+.ar .an{font:500 13px Inter}
+.x{background:transparent;border:0;color:var(--red);cursor:pointer;font-size:16px}
+.btn{background:transparent;border:1px dashed var(--teal);color:var(--teal);border-radius:10px;padding:8px 12px;font:600 12px Inter;cursor:pointer}
+.btn.s{border-style:solid;border-color:var(--line);color:var(--mut);margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--teal);text-align:right;padding:7px;font-size:10px;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--line)}
+td{padding:7px;text-align:right;border-bottom:1px solid #1c2a5a;font-family:'JetBrains Mono',monospace}
+th:first-child,td:first-child{text-align:left}
+.scroll{overflow-x:auto}
+#a_heat td,#d_comp td{text-align:center}
+#a_heat td:not(:first-child),#d_comp td:not(:first-child){font:700 13px 'JetBrains Mono',monospace;border-radius:6px}
+.foot{color:var(--mut);font-size:11px;text-align:center;margin-top:20px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Calculadoras de <span>Precificação</span></h1>
+<div class="tabs">
+  <button class="tab on" data-t="ta">💉 Tirzepatida</button>
+  <button class="tab" data-t="td">✨ Depilação</button>
+</div>
+
+<!-- ================= TIRZEPATIDA ================= -->
+<section id="ta" class="on">
+<div class="grid">
+  <div>
+    <div class="card"><h2>Medicamento</h2>
+      <div class="f2" id="a_med"></div>
+    </div>
+    <div class="card"><h2>Protocolo</h2>
+      <div class="f2">
+        <label class="fl">Modo de dose<div class="inp"><select id="a_modo"><option value="fix">Dose fixa</option><option value="tit">Titulação (escalonada)</option></select></div></label>
+        <div id="a_n_w"></div>
+      </div>
+      <div class="f2" id="a_protfix" style="margin-top:10px"></div>
+      <div class="f2" id="a_prottit" style="margin-top:10px;display:none"></div>
+    </div>
+    <div class="card"><h2>Custos da aplicação</h2>
+      <div class="f2" id="a_cus"></div>
+    </div>
+    <div class="card"><h2>Preço e deduções</h2>
+      <div class="f2" id="a_ded"></div>
+    </div>
+  </div>
+  <div>
+    <div class="card"><h2>Resultado</h2><div id="a_res"></div></div>
+  </div>
+</div>
+<div class="card"><h2>Análise vertical — % sobre o preço de venda</h2><div id="a_vr"></div></div>
+<div class="card"><h2>Tabela de Doses — Preço e Lucratividade</h2>
+  <div class="f2" id="a_tabctrl" style="margin-bottom:14px"></div>
+  <div class="scroll" id="a_tabdoses"></div>
+  <p style="color:var(--mut);font-size:11px;margin:10px 0 0">Preencha os quatro campos acima uma única vez: o valor é replicado automaticamente para todas as doses da tabela. Custo da dose = valor de compra ÷ total de mg do frasco (campo "Medicamento" acima) × mg da dose (regra de três). Despesas variáveis é aplicado sobre o preço no cartão. Edite os preços à vista e no cartão de cada dose conforme sua tabela de preços.</p>
+</div>
+<div class="card"><h2>Mapa de Calor — Margem por Dose</h2>
+  <div class="scroll" id="a_heat"></div>
+  <p style="color:var(--mut);font-size:11px;margin:10px 0 0">Cor por faixa de margem líquida: vermelho (baixa/prejuízo) → dourado (intermediária) → verde (≥ 30%), com base nos preços à vista e cartão da Tabela de Doses acima.</p>
+</div>
+</section>
+
+<!-- ================= DEPILAÇÃO ================= -->
+<section id="td">
+<div class="grid">
+  <div>
+    <div class="card"><h2>Áreas tratadas</h2>
+      <div class="f2" style="margin-bottom:10px"><label class="fl">Tabela de preços<div class="inp"><select id="d_genero"><option value="masc">Masculina</option><option value="fem">Feminina</option></select></div></label></div>
+      <div id="d_areas"></div>
+      <button class="btn" id="d_add">+ Adicionar área</button>
+      <p style="color:var(--mut);font-size:11px;margin:10px 0 0">Selecione a área na lista suspensa: os preços avulsa e pacote (catálogo) são preenchidos automaticamente e podem ser editados. Só entram no cálculo as áreas com preço avulsa preenchido.</p>
+    </div>
+    <div class="card"><h2>Custos e Despesas</h2>
+      <div class="f2" id="d_custext"></div>
+    </div>
+  </div>
+  <div>
+    <div class="card"><h2>Resultado</h2><div id="d_res"></div></div>
+    <div class="card"><h2>Comparativo de Planos — Avulsa × Pacote (10 sessões)</h2><div class="scroll" id="d_comp"></div></div>
+  </div>
+</div>
+<div class="card"><h2>Análise vertical — % sobre o preço de venda</h2><div id="d_vr"></div></div>
+<div class="card"><h2>Tabela de Áreas — Preço e Lucratividade</h2>
+  <div class="f2" id="d_tabctrl" style="margin-bottom:14px"></div>
+  <div class="scroll" id="d_tabareas"></div>
+  <p style="color:var(--mut);font-size:11px;margin:10px 0 0">Preencha os quatro campos acima uma única vez: o valor é replicado automaticamente para todas as áreas da tabela. Os preços avulsa/pacote vêm da seção "Áreas tratadas". Pacote/sessão = valor do pacote ÷ 10 (ou o próprio avulsa quando não há pacote informado).</p>
+</div>
+<div class="card"><h2>Mapa de Calor — Margem por Área</h2>
+  <div class="scroll" id="d_heat"></div>
+  <p style="color:var(--mut);font-size:11px;margin:10px 0 0">Cobre todos os serviços da tabela de preços selecionada (Masculina/Feminina em "Áreas tratadas"), não apenas as áreas adicionadas acima. Usa os preços de catálogo e os mesmos campos de custo/rateio/variáveis/participação profissional da Tabela de Áreas. Cor por faixa de margem líquida: vermelho (baixa/prejuízo) → dourado (intermediária) → verde (≥ 30%).</p>
+</div>
+</section>
+</div>
+
+<script>
+/* ---------- utilitários ---------- */
+const $=id=>document.getElementById(id);
+const num=s=>{s=String(s||'').trim().replace(/[R$\s%]/g,'');if(!s)return 0;
+  const lc=s.lastIndexOf(','),lp=s.lastIndexOf('.');
+  if(lc>-1&&lp>-1){s=lc>lp?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');}
+  else if(lc>-1){s=s.replace(',','.');}
+  else if(lp>-1){const p=s.split('.');if(p.length>2||(p[1].length===3&&p[0].length<=3&&p[0]!=='0'))s=s.replace(/\./g,'');}
+  const v=parseFloat(s);return isNaN(v)?0:v;};
+const g=id=>num($(id).value);
+const R=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const P=v=>(isFinite(v)?v:0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+const HEAT_RED=[255,93,115],HEAT_GOLD=[244,197,66],HEAT_GREEN=[47,224,138];
+const lerpC=(c1,c2,k)=>c1.map((v,i)=>Math.round(v+(c2[i]-v)*k));
+function heatColor(m){
+  if(!isFinite(m))return 'rgba(139,151,189,.12)';
+  const t=Math.max(0,Math.min(1,(m+10)/60));
+  const c=t<0.5?lerpC(HEAT_RED,HEAT_GOLD,t/0.5):lerpC(HEAT_GOLD,HEAT_GREEN,(t-0.5)/0.5);
+  return `rgba(${c[0]},${c[1]},${c[2]},.4)`;
+}
+const mode=id=>document.querySelector(`.tg[data-for="${id}"]`).dataset.mode;
+const dv=(id,base)=>mode(id)==='pct'?g(id)/100*base:g(id);
+const field=(id,label,{pre='',suf=''}={})=>`<label class="fl">${label}<div class="inp">${pre?`<span>${pre}</span>`:''}<input id="${id}" type="text" inputmode="decimal" placeholder="0" autocomplete="off">${suf?`<span>${suf}</span>`:''}</div></label>`;
+const dual=(id,label,def='rs')=>`<label class="fl">${label}<div class="inp"><input id="${id}" type="text" inputmode="decimal" placeholder="0" autocomplete="off"><button type="button" class="tg" data-for="${id}" data-mode="${def}">${def==='pct'?'%':'R$'}</button></div></label>`;
+const deducoesA=p=>
+  field(p+'_imp','Impostos',{suf:'%'})+field(p+'_car','Taxa de cartão/pagamento',{suf:'%'})+
+  dual(p+'_com','Comissão / parceiro (s/ valor cobrado)','pct')+dual(p+'_fix','Custos fixos rateados','pct')+
+  field(p+'_alvo','Margem líquida alvo',{suf:'%'});
+
+/* ---------- motor comum ---------- */
+function analisar(p,bruto,custos){
+  const D=custos.reduce((a,c)=>a+c.v,0);
+  const desc=$(p+'_desc')?dv(p+'_desc',bruto):0, rec=bruto-desc;
+  const imp=$(p+'_imp')?rec*g(p+'_imp')/100:0, car=$(p+'_car')?rec*g(p+'_car')/100:0;
+  const com=$(p+'_com')?dv(p+'_com',rec):0, fix=$(p+'_fix')?dv(p+'_fix',bruto):0;
+  const cfx=$(p+'_cfx')?rec*g(p+'_cfx')/100:0;
+  const cvar=$(p+'_cvar')?dv(p+'_cvar',rec):0;
+  const partp=$(p+'_partprof')?rec*g(p+'_partprof')/100:0;
+  const lucro=rec-D-imp-car-com-fix-cfx-cvar-partp;
+  // preço sugerido para margem alvo
+  const i=$(p+'_imp')?g(p+'_imp')/100:0, c=$(p+'_car')?g(p+'_car')/100:0, al=$(p+'_alvo')?g(p+'_alvo')/100:0;
+  const comP=$(p+'_com')&&mode(p+'_com')==='pct'?g(p+'_com')/100:0, comR=$(p+'_com')&&mode(p+'_com')!=='pct'?g(p+'_com'):0;
+  const fxP=$(p+'_fix')&&mode(p+'_fix')==='pct'?g(p+'_fix')/100:0, fxR=$(p+'_fix')&&mode(p+'_fix')!=='pct'?g(p+'_fix'):0;
+  const cfxP=$(p+'_cfx')?g(p+'_cfx')/100:0;
+  const cvarP=$(p+'_cvar')?(mode(p+'_cvar')==='pct'?g(p+'_cvar')/100:0):0, cvarR=$(p+'_cvar')?(mode(p+'_cvar')==='pct'?0:g(p+'_cvar')):0;
+  const partpP=$(p+'_partprof')?g(p+'_partprof')/100:0;
+  const dp=$(p+'_desc')&&mode(p+'_desc')==='pct'?Math.min(g(p+'_desc')/100,.95):0, dR=$(p+'_desc')&&mode(p+'_desc')!=='pct'?g(p+'_desc'):0;
+  const a=1/(1-dp), b=dR;
+  const den=1-i-c-comP-al-fxP*a-cfxP-cvarP-partpP, nu=D+comR+fxR+fxP*b+cvarR;
+  const sug=(den>0&&nu>0)?a*(nu/den)+b:0;
+  const items=[{l:'Desconto',v:desc,col:'var(--mut)'},...custos.map(x=>({l:x.k,v:x.v,col:'var(--gold)'})),
+    {l:'Impostos',v:imp,col:'var(--red)'},{l:'Taxa cartão',v:car,col:'var(--red)'},{l:'Comissão',v:com,col:'var(--red)'},{l:'Custos fixos rateados',v:fix,col:'var(--red)'},{l:'Custos fixos (%)',v:cfx,col:'var(--red)'},{l:'Custos variáveis',v:cvar,col:'var(--red)'},{l:'Participação profissional',v:partp,col:'var(--red)'}];
+  return {bruto,desc,rec,D,imp,car,com,fix,cfx,cvar,partp,lucro,margem:rec>0?lucro/rec*100:NaN,sug,items,hasCost:D>0};
+}
+function paint(p,r,extras){
+  const has=r.bruto>0;
+  const m=r.margem, cl=!has?'n':m>=30?'g':m>=15?'y':'r';
+  let h=`<div class="hero"><small>Margem líquida</small><b class="${cl}">${has?P(m):'—'}</b><em>${has?'Lucro líquido: '+R(r.lucro):'Preencha os dados para calcular'}</em></div>`;
+  if(has){
+    const ln=(l,v,c='')=>`<div class="ln"><span>${l}</span><b class="${c}">${v}</b></div>`;
+    h+=ln('Preço de venda',R(r.bruto))+(r.desc?ln('(−) Desconto',R(r.desc)):'')+ln('= Valor cobrado',R(r.rec));
+    r.items.slice(1).forEach(x=>{if(x.v)h+=ln('(−) '+x.l,R(x.v))});
+    h+=`<div class="ln tot"><span>Lucro líquido</span><b class="${r.lucro>=0?'g':'r'}">${R(r.lucro)}</b></div>`;
+    if($(p+'_par')){const par=Math.max(1,Math.round(g(p+'_par')));if(par>1)h+=ln('Parcelamento',par+'x de '+R(r.rec/par));}
+  }
+  h+=`<div class="mini">${extras.map(e=>`<div><small>${e[0]}</small><b>${e[1]}</b></div>`).join('')}`+
+     `${(r.sug&&p!=='d')?`<div><small>Preço p/ margem alvo</small><b style="color:var(--gold)">${R(r.sug)}</b></div>`:''}</div>`;
+  let msg='Informe custos e preço de venda. Os resultados aparecem em tempo real.',ac='';
+  if(has){
+    if(m>=30){msg='';ac='ok';}
+    else if(m>=15){msg='Margem intermediária. Revise custos ou preço antes de conceder descontos.';}
+    else if(m>=0){msg='Margem baixa: qualquer desconto adicional pode zerar o lucro.';ac='bad';}
+    else{msg='Operação com prejuízo. O preço não cobre os custos e deduções.';ac='bad';}
+    if(p!=='d'&&r.sug&&g(p+'_alvo')>0&&r.bruto<r.sug)msg+=`${msg?' ':''}Para a margem alvo de ${P(g(p+'_alvo'))}, o preço precisa ser de ${R(r.sug)} (faltam ${R(r.sug-r.bruto)}).`;
+  }else if(p!=='d'&&r.sug)msg='Preço sugerido para a margem alvo calculado acima.';
+  if(msg)h+=`<div class="alert ${ac}">${msg}</div>`;
+  $(p+'_res').innerHTML=h;
+  // análise vertical
+  let v='';
+  if(has){
+    const row=(l,val,col,cls='')=>`<div class="vr ${cls}"><span>${l}</span><div class="bar"><i style="width:${Math.max(0,Math.min(100,val/r.bruto*100))}%;background:${col}"></i></div><span class="pc">${P(val/r.bruto*100)} · ${R(val)}</span></div>`;
+    v=row('Preço de venda',r.bruto,'var(--teal)');
+    r.items.forEach(x=>{if(x.v)v+=row(x.l,x.v,x.col)});
+    v+=row('Lucro líquido',Math.max(r.lucro,0),r.lucro>=0?'var(--green)':'var(--red)','tot');
+  }else v='<div style="color:var(--mut);font-size:13px">A análise vertical aparece após informar o preço de venda.</div>';
+  $(p+'_vr').innerHTML=v;
+}
+
+/* ---------- monta formulários ---------- */
+$('a_med').innerHTML=field('a_custo','Custo do frasco/caneta',{pre:'R$'})+field('a_mg','Total de mg do frasco',{suf:'mg'})+field('a_perda','Perda/desperdício',{suf:'%'});
+$('a_n_w').innerHTML=field('a_n','Nº de aplicações');
+$('a_protfix').innerHTML=`<label class="fl">Dose por aplicação<div class="inp"><select id="a_dose"><option value="">Selecione</option><option value="2,5">2,5 mg</option><option value="3,75">3,75 mg</option><option value="5">5 mg</option><option value="6,25">6,25 mg</option><option value="7,5">7,5 mg</option><option value="8,75">8,75 mg</option><option value="10">10 mg</option><option value="11,25">11,25 mg</option><option value="12,5">12,5 mg</option><option value="13,75">13,75 mg</option><option value="15">15 mg</option></select></div></label>`;
+$('a_prottit').innerHTML=field('a_ini','Dose inicial',{suf:'mg'})+field('a_inc','Incremento por etapa',{suf:'mg'})+field('a_etapa','Aplicações por etapa')+field('a_max','Dose máxima',{suf:'mg'});
+$('a_cus').innerHTML=field('a_ins','Insumos por aplicação',{pre:'R$'})+field('a_prof','Profissional por aplicação',{pre:'R$'});
+$('a_ded').innerHTML=field('a_preco','Preço de venda do tratamento',{pre:'R$'})+dual('a_desc','Desconto','pct')+deducoesA('a');
+$('a_custo').value='1.115'; $('a_mg').value='60'; $('a_ins').value='5'; $('a_car').value='3'; $('a_fix').value='5';
+$('d_custext').innerHTML=field('d_cfx','Custos fixos',{suf:'%'})+dual('d_cvar','Custos variáveis','rs')+field('d_partprof','Participação profissional',{suf:'%'});
+
+const CATALOGO={
+  masc:[['Orelha',80,400],['Abdômen',450,2000],['Ânus',100,500],['Axilas',100,500],['Barba',400,2500],['Base de Pênis',100,500],['Braço inteiro',300,2000],['Costa',400,3000],['Coxas',400,3000],['Glúteo',200,1300],['Lombar',250,800],['Mãos e Dedos',80,350],['Nariz',50,300],['Nuca',150,600],['Ombro',200,1000],['Perna inteira',500,4000],['Pés e Dedos',80,350],['Tórax',300,2000],['Virilha',350,2500],['Linha Alba',200,1000],['Faixa da Barba',100,600]],
+  fem:[['Rosto inteiro',120,1000],['Axila',70,600],['Virilha completa',160,1500],['Ânus',70,600],['Perna completa',300,2500],['Meia perna',250,2200],['Buço',50,400],['Barriga completa',120,1000],['Braços completos',180,1500],['Aréola do Peito',80,400],['Coxas',280,2000],['Faces Lateral',100,450],['Glúteo',200,1200],['Coxa interna',200,1000],['Lateral da Coxa',200,1000],['Linha Alba',60,300],['Lombar',120,600],['Mãos e Dedos',70,300],['Mento',80,500],['Nariz',70,500],['Nuca',150,810],['Pés e Dedos',65,300],['Posterior da Coxa',200,1000],['Seios',90,420],['Contorno da Virilha',130,1000]]
+};
+function addArea(){
+  const d=document.createElement('div');d.className='ar';
+  const key=$('d_genero')?$('d_genero').value:'masc';
+  const opts='<option value="">Selecione</option>'+CATALOGO[key].map(([n,av,pc])=>`<option value="${n}" data-av="${av}" data-pc="${pc}">${n}</option>`).join('');
+  d.innerHTML=`<div class="inp"><select class="an">${opts}</select></div><div class="inp"><span>R$</span><input class="ap" type="text" inputmode="decimal" placeholder="avulsa"></div><div class="inp"><span>R$</span><input class="apac" type="text" inputmode="decimal" placeholder="pacote"></div><button class="x" type="button">✕</button>`;
+  d.querySelector('.an').addEventListener('change',e=>{
+    const o=e.target.selectedOptions[0];
+    d.querySelector('.ap').value=o.dataset.av||'';
+    d.querySelector('.apac').value=o.dataset.pc||'';
+    calcD();
+  });
+  d.querySelector('.x').onclick=()=>{d.remove();calcD()};
+  $('d_areas').appendChild(d);
+}
+function carregarCatalogo(key){
+  $('d_areas').innerHTML='';
+  addArea();
+}
+carregarCatalogo('masc');
+$('d_genero').onchange=()=>{carregarCatalogo($('d_genero').value);calcD();};
+$('d_add').onclick=()=>addArea();
+
+/* ---------- tabela de doses (tirzepatida) ---------- */
+const DOSES=[2.5,3.75,5,6.25,7.5,8.75,10,11.25,12.5,13.75,15];
+const DOSES_DEF={2.5:[200,210],3.75:[250,262.5],5:[350,367.5],6.25:[400,420],7.5:[450,472.5],8.75:[500,525],10:[600,630],11.25:[650,682.5],12.5:[750,787.5],13.75:[800,840],15:[900,945]};
+const dstr=d=>d.toString().replace('.',',');
+const did=d=>d.toString().replace('.','_');
+function buildTabDoses(){
+  $('a_tabctrl').innerHTML=field('tab_ins','Despesas / insumo por dose',{pre:'R$'})+field('tab_compra','Valor de compra do frasco/ampola',{pre:'R$'})+field('tab_rateio','Rateio de despesas fixas',{suf:'%'})+field('tab_var','Despesas variáveis (ex.: taxas cartões, impostos)',{suf:'%'});
+  $('tab_ins').value='5'; $('tab_compra').value='1.115'; $('tab_rateio').value='5'; $('tab_var').value='3';
+  let h='<table><tr><th>Dose</th><th>À vista</th><th>Cartão</th><th>Custo dose</th><th>Custo insumo</th><th>Despesas variáveis</th><th>Rateio desp. fixas</th><th>Total gastos</th><th>Lucro à vista</th><th>% à vista</th><th>Lucro cartão</th><th>% cartão</th></tr>';
+  DOSES.forEach(d=>{
+    const id=did(d),[av,ct]=DOSES_DEF[d];
+    h+=`<tr><td>${dstr(d)} mg</td>`+
+      `<td><div class="inp"><span>R$</span><input id="tab_av_${id}" type="text" inputmode="decimal" value="${dstr(av)}"></div></td>`+
+      `<td><div class="inp"><span>R$</span><input id="tab_ct_${id}" type="text" inputmode="decimal" value="${dstr(ct)}"></div></td>`+
+      `<td id="tab_cd_${id}">—</td><td id="tab_ci_${id}">—</td><td id="tab_cc_${id}">—</td><td id="tab_rt_${id}">—</td><td id="tab_tg_${id}">—</td>`+
+      `<td id="tab_la_${id}">—</td><td id="tab_pa_${id}">—</td><td id="tab_lc_${id}">—</td><td id="tab_pc_${id}">—</td></tr>`;
+  });
+  $('a_tabdoses').innerHTML=h+'</table>';
+}
+buildTabDoses();
+function buildHeatTirzepatida(){
+  let h='<table><tr><th>Dose</th><th>% à vista</th><th>% cartão</th></tr>';
+  DOSES.forEach(d=>{const id=did(d);h+=`<tr><td>${dstr(d)} mg</td><td id="heat_av_${id}">—</td><td id="heat_ct_${id}">—</td></tr>`;});
+  $('a_heat').innerHTML=h+'</table>';
+}
+buildHeatTirzepatida();
+function calcTabDoses(){
+  const custoMg=(g('tab_compra')>0&&g('a_mg')>0)?g('tab_compra')/g('a_mg'):0;
+  const ins=g('tab_ins'), taxaVar=g('tab_var')/100, rateioPct=g('tab_rateio')/100;
+  DOSES.forEach(d=>{
+    const id=did(d);
+    const av=num($('tab_av_'+id).value), ct=num($('tab_ct_'+id).value);
+    const cd=d*custoMg, ci=ins, cc=ct*taxaVar, rt=av*rateioPct, tg=cd+ci+cc+rt;
+    const la=av-cd-ci-rt, lc=ct-cd-ci-cc-rt;
+    const pa=av>0?la/av*100:NaN, pc=ct>0?lc/ct*100:NaN;
+    const cl=m=>!isFinite(m)?'n':m>=30?'g':m>=15?'y':'r';
+    $('tab_cd_'+id).textContent=R(cd);
+    $('tab_ci_'+id).textContent=R(ci);
+    $('tab_cc_'+id).textContent=R(cc);
+    $('tab_rt_'+id).textContent=R(rt);
+    $('tab_tg_'+id).textContent=R(tg);
+    $('tab_la_'+id).innerHTML=`<span class="${la>=0?'g':'r'}">${R(la)}</span>`;
+    $('tab_pa_'+id).innerHTML=`<span class="${cl(pa)}">${isFinite(pa)?P(pa):'—'}</span>`;
+    $('tab_lc_'+id).innerHTML=`<span class="${lc>=0?'g':'r'}">${R(lc)}</span>`;
+    $('tab_pc_'+id).innerHTML=`<span class="${cl(pc)}">${isFinite(pc)?P(pc):'—'}</span>`;
+    const hav=$('heat_av_'+id),hct=$('heat_ct_'+id);
+    if(hav){hav.style.background=heatColor(pa);hav.textContent=isFinite(pa)?P(pa):'—';}
+    if(hct){hct.style.background=heatColor(pc);hct.textContent=isFinite(pc)?P(pc):'—';}
+  });
+}
+
+/* ---------- cálculos ---------- */
+function calcA(){
+  const tit=$('a_modo').value==='tit';
+  $('a_protfix').style.display=tit?'none':'grid';$('a_prottit').style.display=tit?'grid':'none';
+  const perda=Math.min(g('a_perda'),95)/100;
+  const custoMg=(g('a_custo')>0&&g('a_mg')>0)?g('a_custo')/g('a_mg')/(1-perda):0;
+  const N=Math.max(0,Math.round(g('a_n')));
+  let mg=0;
+  if(!tit)mg=g('a_dose')*N;
+  else{const st=Math.max(1,Math.round(g('a_etapa'))||1),mx=g('a_max')||1e9;
+    for(let i=0;i<N;i++)mg+=Math.min(mx,g('a_ini')+g('a_inc')*Math.floor(i/st));}
+  const custos=[{k:'Medicamento (CMV)',v:mg*custoMg},{k:'Insumos',v:g('a_ins')*N},{k:'Profissional',v:g('a_prof')*N}].filter(x=>x.v>0);
+  const r=analisar('a',g('a_preco'),custos);
+  paint('a',r,[['Total de mg',mg.toFixed(1).replace('.',',')+' mg'],['Custo por mg',R(custoMg)],['Custo do tratamento',R(r.D)],['Preço por aplicação',N?R(r.bruto/N):'—']]);
+}
+function buildTabCtrlD(){
+  $('d_tabctrl').innerHTML=field('dtab_ins','Despesas / insumo por área',{pre:'R$'})+field('dtab_rateio','Rateio de despesas fixas',{suf:'%'})+field('dtab_var','Despesas variáveis (ex.: taxas cartões, impostos)',{suf:'%'})+field('dtab_partprof','Participação profissional',{suf:'%'});
+  $('dtab_ins').value='0'; $('dtab_rateio').value='5'; $('dtab_var').value='3'; $('dtab_partprof').value='0';
+}
+buildTabCtrlD();
+function margemArea(av,pc,ins,rateioPct,varPct,ppPct){
+  const pcSess=pc>0?pc/10:av;
+  const cc1=av*varPct, rt1=av*rateioPct, pp1=av*ppPct, tg1=ins+cc1+rt1+pp1;
+  const la=av-tg1, pa=av>0?la/av*100:NaN;
+  const cc2=pcSess*varPct, rt2=pcSess*rateioPct, pp2=pcSess*ppPct, tg2=ins+cc2+rt2+pp2;
+  const lp=pcSess-tg2, pq=pcSess>0?lp/pcSess*100:NaN;
+  return {pcSess,cc1,rt1,pp1,tg1,la,pa,cc2,rt2,pp2,tg2,lp,pq};
+}
+function calcTabAreasD(){
+  const ins=g('dtab_ins'), rateioPct=g('dtab_rateio')/100, varPct=g('dtab_var')/100, ppPct=g('dtab_partprof')/100;
+  const rows=[...document.querySelectorAll('#d_areas .ar')].filter(a=>num(a.querySelector('.ap').value)>0);
+  const cl=m=>!isFinite(m)?'n':m>=30?'g':m>=15?'y':'r';
+  if(!rows.length){
+    $('d_tabareas').innerHTML='<div style="color:var(--mut);font-size:13px">Adicione áreas com preço avulsa preenchido para ver a tabela.</div>';
+  }else{
+    let h='<table><tr><th>Área</th><th>Avulsa</th><th>Pacote</th><th>Custo área</th><th>Desp. variáveis</th><th>Rateio desp. fixas</th><th>Part. profissional</th><th>Total gastos</th><th>Lucro avulsa</th><th>% avulsa</th><th>Lucro pacote/sessão</th><th>% pacote</th></tr>';
+    rows.forEach(a=>{
+      const nome=a.querySelector('.an').value||'—';
+      const av=num(a.querySelector('.ap').value), pc=num(a.querySelector('.apac').value);
+      const r=margemArea(av,pc,ins,rateioPct,varPct,ppPct);
+      h+=`<tr><td>${nome}</td><td>${R(av)}</td><td>${pc>0?R(pc):'—'}</td><td>${R(ins)}</td><td>${R(r.cc1)}</td><td>${R(r.rt1)}</td><td>${R(r.pp1)}</td><td>${R(r.tg1)}</td>`+
+         `<td><span class="${r.la>=0?'g':'r'}">${R(r.la)}</span></td><td><span class="${cl(r.pa)}">${isFinite(r.pa)?P(r.pa):'—'}</span></td>`+
+         `<td><span class="${r.lp>=0?'g':'r'}">${R(r.lp)}</span></td><td><span class="${cl(r.pq)}">${isFinite(r.pq)?P(r.pq):'—'}</span></td></tr>`;
+    });
+    $('d_tabareas').innerHTML=h+'</table>';
+  }
+  // mapa de calor: todos os serviços do catálogo da tabela de preços selecionada (masc/fem), não só as áreas adicionadas
+  const key=$('d_genero')?$('d_genero').value:'masc';
+  let heat='<table><tr><th>Área</th><th>% avulsa</th><th>% pacote</th></tr>';
+  CATALOGO[key].forEach(([nome,av,pc])=>{
+    const r=margemArea(av,pc,ins,rateioPct,varPct,ppPct);
+    heat+=`<tr><td>${nome}</td><td style="background:${heatColor(r.pa)}">${isFinite(r.pa)?P(r.pa):'—'}</td><td style="background:${heatColor(r.pq)}">${isFinite(r.pq)?P(r.pq):'—'}</td></tr>`;
+  });
+  $('d_heat').innerHTML=heat+'</table>';
+}
+function baseD(){
+  let preco=0,pacote=0;
+  document.querySelectorAll('#d_areas .ar').forEach(a=>{const p=num(a.querySelector('.ap').value);if(p>0){preco+=p;pacote+=num(a.querySelector('.apac').value);}});
+  return {preco,pacote};
+}
+function calcD(){
+  const {preco,pacote}=baseD();
+  const r=analisar('d',preco,[]);
+  paint('d',r,[['Preço tabela/sessão (avulsa)',R(preco)],['Preço tabela/pacote (catálogo)',R(pacote)]]);
+  // comparativo: avulsa (1 sessão) × pacote (10 sessões, preço real do catálogo)
+  if(preco<=0){$('d_comp').innerHTML='<div style="color:var(--mut);font-size:13px">Informe o preço das áreas para comparar os planos.</div>';calcTabAreasD();return;}
+  const temPacote=pacote>0;
+  const xa=analisar('d',preco*1,[]);
+  const xbTotal=analisar('d',temPacote?pacote:preco*10,[]);
+  const rateioPacote=temPacote?pacote/10:preco;
+  const xb=analisar('d',rateioPacote,[]); // lucratividade do pacote calculada sobre o valor do rateio (R$/sessão)
+  const row=(l,va,vb,bg)=>`<tr><td>${l}</td><td${bg?` style="background:${heatColor(xa.margem)}"`:''}>${va}</td><td${bg?` style="background:${heatColor(xb.margem)}"`:''}>${vb}</td></tr>`;
+  let t='<table><tr><th>Métrica</th><th>Avulsa (1 sessão)</th><th>Pacote (10 sessões)</th></tr>';
+  t+=row('Valor cobrado',R(xa.rec),R(xbTotal.rec),false);
+  t+=row('Rateio (R$/sessão)',R(xa.rec/1),R(xb.rec),false);
+  t+=row('Lucro líquido (por sessão)',R(xa.lucro),R(xb.lucro),true);
+  t+=row('Margem líquida',isFinite(xa.margem)?P(xa.margem):'—',isFinite(xb.margem)?P(xb.margem):'—',true);
+  $('d_comp').innerHTML=t+'</table><p style="color:var(--mut);font-size:11px;margin:8px 0 0">'+(temPacote?'A coluna Pacote usa o valor de pacote do catálogo (soma das áreas selecionadas), dividido por 10 sessões no rateio.':'Nenhuma área com valor de pacote preenchido — a coluna Pacote está estimando pelo avulsa × 10 sessões.')+' Lucro líquido e Margem líquida do Pacote são calculados sobre o valor do rateio (R$/sessão), não sobre o valor total do pacote. Mesmas deduções (Custos e Despesas) aplicadas aos dois cenários. Células de lucro/margem coloridas por faixa: vermelho (baixa/prejuízo) → dourado → verde (≥ 30%).</p>';
+  calcTabAreasD();
+}
+
+/* ---------- eventos ---------- */
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+});
+document.addEventListener('click',e=>{const t=e.target.closest('.tg');if(!t)return;
+  t.dataset.mode=t.dataset.mode==='pct'?'rs':'pct';t.textContent=t.dataset.mode==='pct'?'%':'R$';calcA();calcD();calcTabDoses();});
+document.addEventListener('input',()=>{calcA();calcD();calcTabDoses();});
+calcA();calcD();calcTabDoses();
+</script>
+</body>
+</html>
